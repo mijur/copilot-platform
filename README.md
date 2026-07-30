@@ -102,16 +102,16 @@ Run the corresponding command from the repository root, then install `backend-st
 ```shell
 # Claude Code
 /plugin marketplace add ./
-/plugin install backend-standards@copilot-platform-claude
+/plugin install backend-standards@ai-tool-lab-plugins
 
 # GitHub Copilot CLI
 copilot plugin marketplace add ./
-copilot plugin install backend-standards@copilot-platform-github
+copilot plugin install backend-standards@ai-tool-lab-plugins
 
 # Codex CLI
 codex plugin marketplace add ./
 ```
 
-OpenAI marketplaces are exposed to Codex and the ChatGPT desktop app from `.agents/plugins/marketplace.json`. Restart the client after changing a package, then select the `Copilot Platform — OpenAI` marketplace and install `backend-standards`.
+OpenAI marketplaces are exposed to Codex and the ChatGPT desktop app from `.agents/plugins/marketplace.json`. Restart the client after changing a package, then select the `AIToolLab-plugins` marketplace and install `backend-standards`.
 
 Each package uses a host-native manifest. Do not point a catalog at a package for another host: `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, and root `plugin.json` are distinct entry points.

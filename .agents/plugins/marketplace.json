@@ -1,7 +1,7 @@
 {
-  "name": "copilot-platform-openai",
+  "name": "ai-tool-lab-plugins",
   "interface": {
-    "displayName": "Copilot Platform — OpenAI"
+    "displayName": "AIToolLab-plugins"
   },
   "plugins": [
     {

@@ -3,7 +3,7 @@
   "description": "Initialize cross-harness marketplaces and scaffold, validate, and review native plugins for Claude Code, OpenAI Codex, and GitHub Copilot.",
   "version": "1.0.0",
   "author": {
-    "name": "Mijur AI Tools Lab"
+    "name": "AIToolLab"
   },
   "license": "MIT",
   "keywords": ["plugins", "marketplace", "scaffolding", "validation"],

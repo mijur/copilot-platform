@@ -1,7 +1,7 @@
 {
-  "name": "copilot-platform-claude",
+  "name": "ai-tool-lab-plugins",
   "owner": {
-    "name": "Mijur AI Tools Lab"
+    "name": "AIToolLab"
   },
   "description": "Native Claude Code plugin examples for backend engineering workflows.",
   "version": "1.0.0",
@@ -12,7 +12,7 @@
       "description": "Initialize cross-harness marketplaces and scaffold, validate, and review native plugins for Claude Code, OpenAI Codex, and GitHub Copilot.",
       "version": "1.0.0",
       "author": {
-        "name": "Mijur AI Tools Lab"
+        "name": "AIToolLab"
       },
       "license": "MIT",
       "keywords": ["plugins", "marketplace", "scaffolding", "validation"]

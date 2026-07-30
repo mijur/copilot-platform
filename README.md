@@ -27,6 +27,7 @@ The infrastructure guard is intentionally narrow and does not invoke network ser
 - **`initialize_marketplace.py`** — validates marketplace metadata, creates `plugins/` and selected host-native catalogs, refuses to overwrite a catalog, and rejects nonempty targets unless passed `--allow-existing-files` after user confirmation.
 - **`scaffold_plugin.py`** — validates caller-provided plugin metadata, checks selected catalogs for collisions, creates host-native package skeletons, seeds a portable skill, and registers the selected catalogs.
 - **`validate_marketplace.py`** — validates catalog sources, native manifests, package containment, and portable skill frontmatter. It supports individual hosts or `--require-all-hosts` for a cross-host plugin.
+- **`release_plugin.py`** — synchronizes a Semantic Version across selected native manifests and matching Claude/Copilot catalog entries; it can also update supported marketplace catalog versions.
 - **`marketplace-plugin-reviewer` agent** — available in Claude Code and GitHub Copilot; reviews a supplied marketplace without modifying it.
 
 Initialize a target marketplace explicitly before authoring its first plugin:
@@ -65,6 +66,7 @@ Component-specific skills supplement the general authoring workflow:
 - `marketplace-mcp-authoring` — MCP-backed model-callable capabilities.
 - `marketplace-hook-authoring` — deterministic lifecycle automation.
 - `marketplace-connector-authoring` — OpenAI-only authenticated external-service integrations.
+- `marketplace-versioning` — Semantic Versioning, release channels, immutable tags, and maintained legacy lines.
 
 ### Harness-specific tool names
 
@@ -73,6 +75,21 @@ Component-specific skills supplement the general authoring workflow:
 ### Agent frontmatter tool collections
 
 Agent capabilities use a separate, host-specific `tools` array; they are neither MCP tool names nor portable vocabulary. Claude Code uses its own names, for example `tools: ["Read", "Grep", "Glob"]` for a read-only reviewer. GitHub Copilot uses documented primary aliases: `tools: ["read", "search"]`; use `edit`, `execute`, or `agent` only when the agent needs those capabilities. Copilot aliases are case-insensitive, but `view`, `grep`, and `glob` are not its primary frontmatter aliases. The OpenAI Codex package must not receive a Claude or Copilot agent-frontmatter shim.
+
+### Releasing and preserving versions
+
+Run the release script with one logical plugin version across native packages, then validate, tag, and publish the intended channel:
+
+```shell
+python /absolute/path/to/release_plugin.py \
+  --marketplace /path/to/marketplace \
+  --plugin api-design \
+  --version 1.2.0 \
+  --marketplace-version 1.2.0 \
+  --hosts claude,openai,github
+```
+
+Keep historical releases as immutable Git tags and maintenance branches. Expose legacy lines through separate marketplace channels: Claude can pin marketplace or plugin sources to refs or SHAs; Codex can add Git marketplaces with `--ref`; Copilot should use a separately named legacy marketplace channel. Do not duplicate a plugin name inside one catalog.
 
 ## Try each native marketplace
 

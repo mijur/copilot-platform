@@ -8,6 +8,11 @@ import sys
 from pathlib import Path
 
 NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+SEMVER_PATTERN = re.compile(
+    r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"
+    r"(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
+    r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
+)
 HOST_SPECS = {
     "claude": {
         "catalog": ".claude-plugin/marketplace.json",
@@ -138,8 +143,10 @@ def main():
         raise ValueError("--name must be lowercase kebab-case")
     if not NAME_PATTERN.fullmatch(args.skill):
         raise ValueError("--skill must be lowercase kebab-case")
-    if not args.description.strip() or not args.author.strip() or not args.version.strip():
-        raise ValueError("--description, --author, and --version cannot be empty")
+    if not args.description.strip() or not args.author.strip():
+        raise ValueError("--description and --author cannot be empty")
+    if not SEMVER_PATTERN.fullmatch(args.version):
+        raise ValueError("--version must be a Semantic Version such as 1.2.3 or 1.2.3-rc.1")
 
     marketplace = args.marketplace.resolve()
     author = {"name": args.author.strip()}

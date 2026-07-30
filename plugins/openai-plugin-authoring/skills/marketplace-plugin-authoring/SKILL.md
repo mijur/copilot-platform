@@ -50,6 +50,7 @@ After the package skeleton exists, load the guide for the component being added 
 - `marketplace-mcp-authoring` for model-callable MCP capabilities.
 - `marketplace-hook-authoring` for deterministic lifecycle automation.
 - `marketplace-connector-authoring` for OpenAI authenticated external-service integrations only.
+- `marketplace-versioning` for Semantic Versioning, release channels, and preserving older releases.
 
 ## Harness-specific tool names
 

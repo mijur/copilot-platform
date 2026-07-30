@@ -8,6 +8,11 @@ import sys
 from pathlib import Path
 
 NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+SEMVER_PATTERN = re.compile(
+    r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"
+    r"(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
+    r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
+)
 HOST_SPECS = {
     "claude": {"catalog": ".claude-plugin/marketplace.json", "manifest": ".claude-plugin/plugin.json"},
     "openai": {"catalog": ".agents/plugins/marketplace.json", "manifest": ".codex-plugin/plugin.json"},
@@ -39,6 +44,10 @@ def parse_args():
         help="Require --plugin to be present in every selected host catalog",
     )
     return parser.parse_args()
+
+
+def is_semver(value):
+    return isinstance(value, str) and SEMVER_PATTERN.fullmatch(value) is not None
 
 
 def read_json(path, errors):
@@ -127,8 +136,14 @@ def validate_entry(marketplace, host, name, entry, errors):
         return
     if manifest.get("name") != name:
         errors.append(f"{manifest_path}: name must equal catalog entry '{name}'")
-    if not isinstance(manifest.get("version"), str) or not manifest["version"].strip():
-        errors.append(f"{manifest_path}: version must be a non-empty string")
+    if not is_semver(manifest.get("version")):
+        errors.append(f"{manifest_path}: version must be a Semantic Version")
+    elif host != "openai":
+        catalog_version = entry.get("version")
+        if not is_semver(catalog_version):
+            errors.append(f"{label}: version must be a Semantic Version")
+        elif catalog_version != manifest["version"]:
+            errors.append(f"{label}: version must equal {manifest_path}")
     if not isinstance(manifest.get("description"), str) or not manifest["description"].strip():
         errors.append(f"{manifest_path}: description must be a non-empty string")
     skills_root = package / "skills"
@@ -137,6 +152,7 @@ def validate_entry(marketplace, host, name, entry, errors):
         errors.append(f"{package}: must include at least one skills/*/SKILL.md")
     for skill in skills:
         frontmatter(skill, errors)
+    return manifest.get("version")
 
 
 def main():
@@ -147,6 +163,7 @@ def main():
     marketplace = args.marketplace.resolve()
     errors = []
     entries = {}
+    versions = {}
     for host in hosts:
         catalog_path = marketplace / HOST_SPECS[host]["catalog"]
         entries[host] = catalog_entries(read_json(catalog_path, errors), catalog_path, errors)
@@ -165,7 +182,11 @@ def main():
             checks.extend((host, name, entry) for name, entry in host_entries.items())
 
     for host, name, entry in checks:
-        validate_entry(marketplace, host, name, entry, errors)
+        version = validate_entry(marketplace, host, name, entry, errors)
+        if version:
+            versions.setdefault(name, {})[host] = version
+    if args.require_all_hosts and args.plugin and len(set(versions.get(args.plugin, {}).values())) > 1:
+        errors.append(f"Plugin '{args.plugin}' must use one version across selected hosts")
 
     if errors:
         print("Marketplace validation failed:", file=sys.stderr)

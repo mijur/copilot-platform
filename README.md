@@ -12,23 +12,38 @@ This marketplace ships host-native packages for the same workflow, intentionally
 
 - `plugin-authoring` — portable marketplace tooling that initializes shared cross-harness marketplaces, then scaffolds, validates, reviews, and releases host-native plugins. Package documentation: [Claude Code](plugins/claude-plugin-authoring/README.md), [OpenAI Codex / ChatGPT](plugins/openai-plugin-authoring/README.md), and [GitHub Copilot](plugins/plugin-authoring/README.md).
 
-## Try each native marketplace
+## Add this marketplace
 
-Run the corresponding command from the repository root, then install `plugin-authoring` from the named marketplace.
+Use the repository URL `https://github.com/mijur/aitoollab-plugins` in the applicable host client, then install `plugin-authoring` from the `ai-tool-lab-plugins` marketplace.
+
+### Claude Code
+Navigated within the session
 
 ```shell
-# Claude Code
-/plugin marketplace add ./
+/plugin marketplace add https://github.com/mijur/aitoollab-plugins
+```
+```shell
 /plugin install plugin-authoring@ai-tool-lab-plugins
-
-# GitHub Copilot CLI
-copilot plugin marketplace add ./
-copilot plugin install plugin-authoring@ai-tool-lab-plugins
-
-# Codex CLI
-codex plugin marketplace add ./
 ```
 
-OpenAI marketplaces are exposed to Codex and the ChatGPT desktop app from `.agents/plugins/marketplace.json`. Restart the client after changing a package, then select the `AIToolLab-plugins` marketplace and install `plugin-authoring`.
+### GitHub Copilot CLI
+
+Navigated within the session
+
+```shell
+/plugin marketplace add https://github.com/mijur/aitoollab-plugins
+```
+```shell
+/plugin add plugin-authoring
+```
+
+### OpenAI Codex
+
+```shell
+codex plugin marketplace add https://github.com/mijur/aitoollab-plugins
+```
+```shell
+codex plugin add plugin-authoring@ai-tool-lab-plugins
+```
 
 Each package uses a host-native manifest. Do not point a catalog at a package for another host: `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, and root `plugin.json` are distinct entry points.

@@ -4,6 +4,15 @@ description: Initialize a cross-harness marketplace for native Claude Code, Open
 ---
 
 Use the bundled scripts against the user's explicit target directory. Never assume that the current repository is the target.
+## Script language selection
+
+All three variants accept the same operation and options. Keep the Python helper as the independent fallback; select the executable for the caller's shell:
+
+- **PowerShell — recommended on Windows:** run `& /absolute/path/to/marketplace-tools.ps1 initialize ...`. It is a native PowerShell implementation and needs PowerShell 7+.
+- **Bash — Bash or POSIX-shell entry point:** run `bash /absolute/path/to/marketplace-tools.sh initialize ...`. It forwards to the colocated PowerShell implementation, so it also needs `pwsh`; use it when the caller is already in Bash but PowerShell Core is installed.
+- **Python — independent fallback:** run `python /absolute/path/to/initialize_marketplace.py ...` when `pwsh` is unavailable or the existing Python workflow is preferred.
+
+Command mapping is `initialize`, `scaffold`, `validate`, and `release` for `initialize_marketplace.py`, `scaffold_plugin.py`, `validate_marketplace.py`, and `release_plugin.py`, respectively. Do not use the Bash launcher when `pwsh` is unavailable.
 
 ## Decide whether scaffolding is needed
 

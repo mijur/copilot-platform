@@ -4,6 +4,9 @@ description: Release, preserve, or maintain versions of a cross-harness marketpl
 ---
 
 Use one stable kebab-case plugin identity. Do not place duplicate entries with the same plugin name in one host catalog and do not create `plugin-v2` as a versioning substitute.
+## Script language selection
+
+Use `& /absolute/path/to/marketplace-tools.ps1 release ...` on Windows; it is the recommended native PowerShell implementation. From Bash, use `bash /absolute/path/to/marketplace-tools.sh release ...` only when PowerShell Core (`pwsh`) is installed, because the Bash entry point forwards to that colocated implementation. Keep `python /absolute/path/to/release_plugin.py ...` as the independent fallback when PowerShell Core is unavailable. All variants use the same option names and release the same cross-harness package set.
 
 ## Release the current line
 

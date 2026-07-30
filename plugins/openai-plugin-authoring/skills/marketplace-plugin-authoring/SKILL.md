@@ -4,6 +4,15 @@ description: Create, extend, or validate native plugins in an initialized Claude
 ---
 
 Use the bundled scripts against the user's explicit target marketplace. Never assume that the current repository is the target.
+## Script language selection
+
+The PowerShell and Bash tools expose the same four operations and option names as the retained Python helpers. Select by execution environment, not by marketplace host:
+
+- **PowerShell — recommended on Windows:** `& /absolute/path/to/marketplace-tools.ps1 scaffold ...`; native implementation, requires PowerShell 7+.
+- **Bash — Bash or POSIX-shell entry point:** `bash /absolute/path/to/marketplace-tools.sh scaffold ...`; forwards to the colocated PowerShell implementation and therefore requires `pwsh`.
+- **Python — independent fallback:** `python /absolute/path/to/scaffold_plugin.py ...`; use if PowerShell Core is unavailable or the existing Python workflow is preferred.
+
+Use `initialize`, `scaffold`, `validate`, or `release` as the first argument to `marketplace-tools.ps1` or `marketplace-tools.sh`. Use the Python script whose filename corresponds to that operation. Do not choose by Claude, OpenAI, or Copilot: all versions operate on the same cross-harness marketplace format.
 
 ## Route the request
 

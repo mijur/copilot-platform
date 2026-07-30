@@ -8,16 +8,6 @@ This marketplace ships host-native packages for the same workflow, intentionally
 | OpenAI Codex / ChatGPT | `.agents/plugins/marketplace.json` | `plugins/openai-*/` | `backend-standards`, `plugin-authoring` |
 | GitHub Copilot | `.github/plugin/marketplace.json` | `plugins/<plugin-name>/` | `backend-standards`, `plugin-authoring` |
 
-## Included workflow
-
-`backend-standards` supplies three focused capabilities:
-
-- **`conventional-commits` skill** — drafts a Conventional Commit from the current change intent.
-- **`backend-code-reviewer` agent** — where the host supports packaged agents, reviews backend changes for dependency injection, structured logging, API error envelopes, and endpoint authorization.
-- **Infrastructure guard hook** — blocks agent write tools from modifying project files that the team protects, including solution, project, and pipeline files.
-
-The infrastructure guard is intentionally narrow and does not invoke network services or require credentials. Claude Code and Codex require the user to review and trust plugin hooks before they run; the Copilot package uses its native hook configuration.
-
 ## Portable marketplace-authoring tooling
 
 `plugin-authoring` is an installable toolkit for shared cross-harness marketplaces. It has two deliberately separate workflows and never assumes or targets this repository when used.
@@ -28,7 +18,15 @@ The infrastructure guard is intentionally narrow and does not invoke network ser
 - **`scaffold_plugin.py`** — validates caller-provided plugin metadata, checks selected catalogs for collisions, creates host-native package skeletons, seeds a portable skill, and registers the selected catalogs.
 - **`validate_marketplace.py`** — validates catalog sources, native manifests, package containment, and portable skill frontmatter. It supports individual hosts or `--require-all-hosts` for a cross-host plugin.
 - **`release_plugin.py`** — synchronizes a Semantic Version across selected native manifests and matching Claude/Copilot catalog entries; it can also update supported marketplace catalog versions.
+- **`marketplace-tools.ps1`** — native PowerShell implementation of all four marketplace operations, selected by its first argument.
+- **`marketplace-tools.sh`** — Bash entry point that forwards the same operation and options to colocated PowerShell tooling when `pwsh` is installed.
+
 - **`marketplace-plugin-reviewer` agent** — available in Claude Code and GitHub Copilot; reviews a supplied marketplace without modifying it.
+### Script language selection
+
+The four Python helpers remain the independent, cross-platform fallback. `marketplace-tools.ps1` is the native PowerShell alternative; it accepts an operation first (`initialize`, `scaffold`, `validate`, or `release`) followed by the matching helper's options. Use it on Windows with PowerShell 7+: `& /absolute/path/to/marketplace-tools.ps1 scaffold ...`.
+
+`marketplace-tools.sh` is the Bash entry point: `bash /absolute/path/to/marketplace-tools.sh scaffold ...`. It forwards to the colocated PowerShell implementation and requires `pwsh`, so use it from Bash only when PowerShell Core is installed. On a POSIX environment without `pwsh`, use the corresponding Python helper rather than the Bash launcher. Script choice is based on the caller's runtime, never the target marketplace host.
 
 Initialize a target marketplace explicitly before authoring its first plugin:
 

@@ -68,6 +68,10 @@ Component-specific skills supplement the general authoring workflow:
 - `marketplace-connector-authoring` — OpenAI-only authenticated external-service integrations.
 - `marketplace-versioning` — Semantic Versioning, release channels, immutable tags, and maintained legacy lines.
 
+### Reusable GitHub Copilot components
+
+Follow the Awesome Copilot composition pattern for GitHub Copilot: keep reusable agents in the marketplace-level `agents/` collection and reusable skills in `skills/`. A thin adapter at `plugins/<plugin>/.github/plugin/plugin.json` lists the exact component paths, for example `"./agents/reviewer.agent.md"` and `"./skills/review-workflow/"`. Multiple adapters can reference the same component without copying it. This pattern is GitHub-specific; Claude and OpenAI packages remain self-contained because their installed packages must carry their own resources.
+
 ### Harness-specific tool names
 
 “Tool collection” is a generic planning term, not a portable plugin API. **Claude Code** packages an **MCP server** in `.mcp.json` or `plugin.json` `mcpServers`; its exposed names are `mcp__plugin_<plugin-name>_<server-name>__<tool-name>`. **OpenAI Codex** calls bundled servers **plugin-provided MCP servers**; user policy addresses them at `plugins.<plugin>.mcp_servers.<server>` and filters discovered tool names with `enabled_tools` or `disabled_tools`. **GitHub Copilot** distinguishes direct custom-tool registrations (`tools`) from MCP-backed tools (`mcpServers` pointing at an in-package `.mcp.json`). Keep every registration and implementation inside its host-native package, and validate each exposed operation in the target host.

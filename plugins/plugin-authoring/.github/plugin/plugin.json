@@ -1,0 +1,23 @@
+{
+  "name": "plugin-authoring",
+  "description": "Initialize cross-harness marketplaces and scaffold, validate, and review native plugins for Claude Code, OpenAI Codex, and GitHub Copilot.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Mijur AI Tools Lab"
+  },
+  "license": "MIT",
+  "keywords": ["plugins", "marketplace", "scaffolding", "validation"],
+  "agents": [
+    "./agents/marketplace-plugin-reviewer.agent.md"
+  ],
+  "skills": [
+    "./skills/marketplace-initialization/",
+    "./skills/marketplace-plugin-authoring/",
+    "./skills/marketplace-skill-authoring/",
+    "./skills/marketplace-agent-authoring/",
+    "./skills/marketplace-mcp-authoring/",
+    "./skills/marketplace-hook-authoring/",
+    "./skills/marketplace-connector-authoring/",
+    "./skills/marketplace-versioning/"
+  ]
+}

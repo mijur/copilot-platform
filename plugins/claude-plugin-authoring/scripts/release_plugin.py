@@ -76,6 +76,14 @@ def entry_for(catalog, plugin, path):
     return entries[0]
 
 
+def manifest_path_for(package, host):
+    if host == "github":
+        reusable_manifest = package / ".github" / "plugin" / "plugin.json"
+        if reusable_manifest.is_file():
+            return reusable_manifest
+    return package / HOST_SPECS[host]["manifest"]
+
+
 
 
 def set_path(value, keys, replacement):
@@ -103,7 +111,7 @@ def main():
         catalog = load_json(catalog_path)
         entry = entry_for(catalog, args.plugin, catalog_path)
         package = marketplace / spec["package"].format(name=args.plugin)
-        manifest_path = package / spec["manifest"]
+        manifest_path = manifest_path_for(package, host)
         manifest = load_json(manifest_path)
         if manifest.get("name") != args.plugin:
             raise ValueError(f"{manifest_path}: name must equal '{args.plugin}'")

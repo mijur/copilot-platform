@@ -27,7 +27,7 @@ HOST_SPECS = {
     "github": {
         "catalog": ".github/plugin/marketplace.json",
         "package": "plugins/{name}",
-        "manifest": "plugin.json",
+        "manifest": ".github/plugin/plugin.json",
     },
 }
 
@@ -114,7 +114,7 @@ def manifest_for(host, args, author):
                 "capabilities": ["Read"],
             },
         }
-    return {**shared, "skills": "skills/"}
+    return {**shared, "skills": [f"./skills/{args.skill}/"]}
 
 
 def catalog_entry_for(host, args, author, package_source):
@@ -163,12 +163,20 @@ def main():
     for package in packages.values():
         if package.exists():
             raise ValueError(f"Refusing to overwrite existing package: {package}")
+    if "github" in hosts:
+        shared_skill_dir = marketplace / "skills" / args.skill
+        if shared_skill_dir.exists():
+            raise ValueError(f"Refusing to overwrite reusable GitHub skill: {shared_skill_dir}")
     for host, catalog in catalog_data.items():
         if any(entry.get("name") == args.name for entry in catalog["plugins"] if isinstance(entry, dict)):
             raise ValueError(f"Refusing to overwrite {host} catalog entry: {args.name}")
 
     for host, package in packages.items():
-        skill_path = package / "skills" / args.skill / "SKILL.md"
+        skill_path = (
+            marketplace / "skills" / args.skill / "SKILL.md"
+            if host == "github"
+            else package / "skills" / args.skill / "SKILL.md"
+        )
         skill_path.parent.mkdir(parents=True)
         skill_path.write_text(skill_template(args.skill, args.description), encoding="utf-8")
         manifest_path = package / HOST_SPECS[host]["manifest"]

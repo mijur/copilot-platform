@@ -93,6 +93,41 @@ def local_source(host, entry, label, errors):
     return source
 
 
+def manifest_path_for(package, host):
+    if host == "github":
+        reusable_manifest = package / ".github" / "plugin" / "plugin.json"
+        if reusable_manifest.is_file():
+            return reusable_manifest
+    return package / HOST_SPECS[host]["manifest"]
+
+
+def skills_for(marketplace, host, package, manifest_path, manifest, errors):
+    reusable_manifest = package / ".github" / "plugin" / "plugin.json"
+    if host == "github" and manifest_path == reusable_manifest:
+        paths = manifest.get("skills")
+        paths = [paths] if isinstance(paths, str) else paths
+        if not isinstance(paths, list) or not paths:
+            errors.append(f"{manifest_path}: reusable GitHub plugin needs a non-empty skills array")
+            return []
+        skills = []
+        for relative_path in paths:
+            if not isinstance(relative_path, str) or not relative_path.startswith("./"):
+                errors.append(f"{manifest_path}: reusable skill paths must start with ./")
+                continue
+            skills_root = (marketplace / relative_path.removeprefix("./")).resolve()
+            if not inside_root(marketplace, skills_root):
+                errors.append(f"{manifest_path}: reusable skill path escapes the marketplace root")
+            elif skills_root.is_dir():
+                skills.extend(skills_root.rglob("SKILL.md"))
+            elif skills_root.name == "SKILL.md" and skills_root.is_file():
+                skills.append(skills_root)
+            else:
+                errors.append(f"{manifest_path}: reusable skill path does not exist: {relative_path}")
+        return skills
+    skills_root = package / "skills"
+    return list(skills_root.rglob("SKILL.md")) if skills_root.is_dir() else []
+
+
 def inside_root(root, candidate):
     try:
         candidate.relative_to(root)
@@ -130,7 +165,7 @@ def validate_entry(marketplace, host, name, entry, errors):
     if not inside_root(marketplace, package):
         errors.append(f"{label}: source escapes the marketplace root")
         return
-    manifest_path = package / HOST_SPECS[host]["manifest"]
+    manifest_path = manifest_path_for(package, host)
     manifest = read_json(manifest_path, errors)
     if manifest is None:
         return
@@ -146,8 +181,7 @@ def validate_entry(marketplace, host, name, entry, errors):
             errors.append(f"{label}: version must equal {manifest_path}")
     if not isinstance(manifest.get("description"), str) or not manifest["description"].strip():
         errors.append(f"{manifest_path}: description must be a non-empty string")
-    skills_root = package / "skills"
-    skills = list(skills_root.rglob("SKILL.md")) if skills_root.is_dir() else []
+    skills = skills_for(marketplace, host, package, manifest_path, manifest, errors)
     if not skills:
         errors.append(f"{package}: must include at least one skills/*/SKILL.md")
     for skill in skills:

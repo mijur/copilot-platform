@@ -7,17 +7,6 @@
   "version": "1.0.0",
   "plugins": [
     {
-      "name": "backend-standards",
-      "source": "./plugins/claude-backend-standards",
-      "description": "Backend code-review and Conventional Commit workflows for Claude Code.",
-      "version": "1.0.0",
-      "author": {
-        "name": "Mijur AI Tools Lab"
-      },
-      "license": "MIT",
-      "keywords": ["backend", "code-review", "conventional-commits"]
-    },
-    {
       "name": "plugin-authoring",
       "source": "./plugins/claude-plugin-authoring",
       "description": "Initialize cross-harness marketplaces and scaffold, validate, and review native plugins for Claude Code, OpenAI Codex, and GitHub Copilot.",

@@ -5,18 +5,6 @@
   },
   "plugins": [
     {
-      "name": "backend-standards",
-      "source": {
-        "source": "local",
-        "path": "./plugins/openai-backend-standards"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_INSTALL"
-      },
-      "category": "Productivity"
-    },
-    {
       "name": "plugin-authoring",
       "source": {
         "source": "local",

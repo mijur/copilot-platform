@@ -15,7 +15,27 @@
         "name": "AIToolLab"
       },
       "license": "MIT",
-      "keywords": ["plugins", "marketplace", "scaffolding", "validation"]
+      "keywords": [
+        "plugins",
+        "marketplace",
+        "scaffolding",
+        "validation"
+      ]
+    },
+    {
+      "name": "eshop-dev",
+      "source": "./plugins/claude-eshop-dev",
+      "description": "eShop reference app development toolkit: scoped backend-service agent plus build/test/scope skills for the dotnet/eShop repo",
+      "version": "1.0.0",
+      "author": {
+        "name": "Milosz Jurgiel"
+      },
+      "license": "MIT",
+      "keywords": [
+        "agent-plugin",
+        "eshop",
+        "dotnet"
+      ]
     }
   ]
 }

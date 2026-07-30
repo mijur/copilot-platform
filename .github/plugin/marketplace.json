@@ -1,0 +1,23 @@
+{
+  "name": "copilot-platform-github",
+  "owner": {
+    "name": "Mijur AI Tools Lab"
+  },
+  "metadata": {
+    "description": "Native GitHub Copilot plugin examples for backend engineering workflows.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "backend-standards",
+      "source": "./plugins/backend-standards",
+      "description": "Backend code-review and Conventional Commit workflows for GitHub Copilot.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Mijur AI Tools Lab"
+      },
+      "license": "MIT",
+      "keywords": ["backend", "code-review", "conventional-commits"]
+    }
+  ]
+}

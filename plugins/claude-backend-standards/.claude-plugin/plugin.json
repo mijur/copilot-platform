@@ -1,0 +1,10 @@
+{
+  "name": "backend-standards",
+  "description": "Backend code-review and Conventional Commit workflows for Claude Code.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Mijur AI Tools Lab"
+  },
+  "license": "MIT",
+  "keywords": ["backend", "code-review", "conventional-commits"]
+}

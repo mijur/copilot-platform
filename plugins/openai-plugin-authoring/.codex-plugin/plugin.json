@@ -1,7 +1,7 @@
 {
   "name": "plugin-authoring",
   "version": "1.0.0",
-  "description": "Scaffold and validate native marketplace plugins for Claude Code, OpenAI Codex, and GitHub Copilot.",
+  "description": "Initialize cross-harness marketplaces and scaffold and validate native plugins for Claude Code, OpenAI Codex, and GitHub Copilot.",
   "author": {
     "name": "Mijur AI Tools Lab"
   },
@@ -10,13 +10,13 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Plugin Authoring",
-    "shortDescription": "Scaffold and validate native marketplace plugins.",
-    "longDescription": "Create and verify native plugin packages and catalog entries for each supported agent harness.",
+    "shortDescription": "Initialize marketplaces and author native plugins.",
+    "longDescription": "Initialize marketplace catalogs and create and verify native plugin packages for each supported agent harness.",
     "developerName": "Mijur AI Tools Lab",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
     "defaultPrompt": [
-      "Create a new plugin in this cross-harness marketplace."
+      "Initialize or extend a cross-harness marketplace."
     ]
   }
 }

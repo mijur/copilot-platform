@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scaffold host-native packages in any local cross-harness marketplace."""
+"""Scaffold host-native packages in any cross-harness marketplace."""
 
 import argparse
 import json
@@ -38,7 +38,7 @@ def parse_hosts(value):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Scaffold a plugin for one or more local Claude, OpenAI, and Copilot marketplaces."
+        description="Scaffold a plugin for one or more Claude, OpenAI, and Copilot marketplaces."
     )
     parser.add_argument("--marketplace", type=Path, required=True, help="Target marketplace root")
     parser.add_argument("--name", required=True, help="Kebab-case plugin name")

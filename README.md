@@ -18,18 +18,29 @@ This marketplace ships host-native packages for the same workflow, intentionally
 
 The infrastructure guard is intentionally narrow and does not invoke network services or require credentials. Claude Code and Codex require the user to review and trust plugin hooks before they run; the Copilot package uses its native hook configuration.
 
-## Portable plugin-authoring tooling
+## Portable marketplace-authoring tooling
 
-`plugin-authoring` is an installable authoring toolkit for **any existing local cross-harness marketplace**. It does not assume or target this repository when used.
+`plugin-authoring` is an installable toolkit for shared cross-harness marketplaces. It has two deliberately separate workflows and never assumes or targets this repository when used.
 
-- **`marketplace-plugin-authoring` skill** — guides creation and modification of native Claude, OpenAI, and Copilot plugin packages in an explicit target marketplace.
-- **`scaffold_plugin.py`** — validates caller-provided names and publisher metadata, checks every selected catalog for collisions, creates host-native package skeletons, seeds a portable skill, and registers the selected catalogs.
-- **`validate_marketplace.py`** — validates local catalog sources, native manifests, package containment, and portable skill frontmatter. It supports individual hosts or `--require-all-hosts` for a cross-host plugin.
-- **`marketplace-plugin-reviewer` agent** — available in Claude Code and GitHub Copilot; reviews the supplied target marketplace without modifying it.
+- **`marketplace-initialization` skill** — inspects the target first, avoids scaffolding when selected catalogs already exist, and requires explicit confirmation before scaffolding a nonempty directory. It does not create plugins.
+- **`marketplace-plugin-authoring` skill** — inspects target catalogs and routes uninitialized targets to the initialization workflow; it creates, modifies, and validates native plugin packages only after required catalogs exist.
+- **`initialize_marketplace.py`** — validates marketplace metadata, creates `plugins/` and selected host-native catalogs, refuses to overwrite a catalog, and rejects nonempty targets unless passed `--allow-existing-files` after user confirmation.
+- **`scaffold_plugin.py`** — validates caller-provided plugin metadata, checks selected catalogs for collisions, creates host-native package skeletons, seeds a portable skill, and registers the selected catalogs.
+- **`validate_marketplace.py`** — validates catalog sources, native manifests, package containment, and portable skill frontmatter. It supports individual hosts or `--require-all-hosts` for a cross-host plugin.
+- **`marketplace-plugin-reviewer` agent** — available in Claude Code and GitHub Copilot; reviews a supplied marketplace without modifying it.
 
-The toolkit expects the target marketplace to already provide the conventional catalog files for the hosts it will target. Run the bundled utilities with an explicit path and publisher:
+Initialize a target marketplace explicitly before authoring its first plugin:
+
+For a nonempty target missing requested catalogs, inspect and list its existing entries, obtain explicit user confirmation, then append `--allow-existing-files` to the initialization command.
 
 ```shell
+python /absolute/path/to/initialize_marketplace.py \
+  --marketplace /path/to/marketplace \
+  --name example-developer-tools \
+  --description "Internal developer-tool marketplace." \
+  --author "Example Developer Tools" \
+  --hosts claude,openai,github
+
 python /absolute/path/to/scaffold_plugin.py \
   --marketplace /path/to/marketplace \
   --name api-design \
@@ -46,6 +57,22 @@ python /absolute/path/to/validate_marketplace.py \
 ```
 
 The scaffold intentionally creates only the portable skill. Add an agent, hook, MCP server, or other host-specific component only after the workflow needs it.
+
+Component-specific skills supplement the general authoring workflow:
+
+- `marketplace-skill-authoring` — reusable instructions.
+- `marketplace-agent-authoring` — host-native agent prompts and frontmatter capability names.
+- `marketplace-mcp-authoring` — MCP-backed model-callable capabilities.
+- `marketplace-hook-authoring` — deterministic lifecycle automation.
+- `marketplace-connector-authoring` — OpenAI-only authenticated external-service integrations.
+
+### Harness-specific tool names
+
+“Tool collection” is a generic planning term, not a portable plugin API. **Claude Code** packages an **MCP server** in `.mcp.json` or `plugin.json` `mcpServers`; its exposed names are `mcp__plugin_<plugin-name>_<server-name>__<tool-name>`. **OpenAI Codex** calls bundled servers **plugin-provided MCP servers**; user policy addresses them at `plugins.<plugin>.mcp_servers.<server>` and filters discovered tool names with `enabled_tools` or `disabled_tools`. **GitHub Copilot** distinguishes direct custom-tool registrations (`tools`) from MCP-backed tools (`mcpServers` pointing at an in-package `.mcp.json`). Keep every registration and implementation inside its host-native package, and validate each exposed operation in the target host.
+
+### Agent frontmatter tool collections
+
+Agent capabilities use a separate, host-specific `tools` array; they are neither MCP tool names nor portable vocabulary. Claude Code uses its own names, for example `tools: ["Read", "Grep", "Glob"]` for a read-only reviewer. GitHub Copilot uses documented primary aliases: `tools: ["read", "search"]`; use `edit`, `execute`, or `agent` only when the agent needs those capabilities. Copilot aliases are case-insensitive, but `view`, `grep`, and `glob` are not its primary frontmatter aliases. The OpenAI Codex package must not receive a Claude or Copilot agent-frontmatter shim.
 
 ## Try each native marketplace
 
@@ -64,6 +91,6 @@ copilot plugin install backend-standards@copilot-platform-github
 codex plugin marketplace add ./
 ```
 
-OpenAI local marketplaces are exposed to Codex and the ChatGPT desktop app from `.agents/plugins/marketplace.json`. Restart the client after changing a local package, then select the `Copilot Platform — OpenAI` marketplace and install `backend-standards`.
+OpenAI marketplaces are exposed to Codex and the ChatGPT desktop app from `.agents/plugins/marketplace.json`. Restart the client after changing a package, then select the `Copilot Platform — OpenAI` marketplace and install `backend-standards`.
 
 Each package uses a host-native manifest. Do not point a catalog at a package for another host: `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, and root `plugin.json` are distinct entry points.

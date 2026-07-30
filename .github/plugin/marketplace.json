@@ -22,7 +22,7 @@
     {
       "name": "plugin-authoring",
       "source": "./plugins/plugin-authoring",
-      "description": "Scaffold, validate, and review native marketplace plugins for Claude Code, OpenAI Codex, and GitHub Copilot.",
+      "description": "Initialize cross-harness marketplaces and scaffold, validate, and review native plugins for Claude Code, OpenAI Codex, and GitHub Copilot.",
       "version": "1.0.0",
       "author": {
         "name": "Mijur AI Tools Lab"

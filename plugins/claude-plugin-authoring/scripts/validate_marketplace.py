@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate local host-native plugin packages in any cross-harness marketplace."""
+"""Validate host-native plugin packages in any cross-harness marketplace."""
 
 import argparse
 import json
@@ -25,7 +25,7 @@ def parse_hosts(value):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Validate local native plugin packages.")
+    parser = argparse.ArgumentParser(description="Validate native plugin packages.")
     parser.add_argument("--marketplace", type=Path, required=True, help="Target marketplace root")
     parser.add_argument("--plugin", help="Validate one kebab-case plugin")
     parser.add_argument(
@@ -75,11 +75,11 @@ def local_source(host, entry, label, errors):
     source = entry.get("source")
     if host == "openai":
         if not isinstance(source, dict) or source.get("source") != "local":
-            errors.append(f"{label}: only local OpenAI sources can be validated")
+            errors.append(f"{label}: only OpenAI target-path sources can be validated")
             return None
         source = source.get("path")
     if not isinstance(source, str) or not source.startswith("./"):
-        errors.append(f"{label}: source must be a local ./ path")
+        errors.append(f"{label}: source must be a ./ path")
         return None
     return source
 

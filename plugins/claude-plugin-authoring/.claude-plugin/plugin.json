@@ -1,0 +1,10 @@
+{
+  "name": "plugin-authoring",
+  "description": "Scaffold, validate, and review native marketplace plugins for Claude Code, OpenAI Codex, and GitHub Copilot.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Mijur AI Tools Lab"
+  },
+  "license": "MIT",
+  "keywords": ["plugins", "marketplace", "scaffolding", "validation"]
+}

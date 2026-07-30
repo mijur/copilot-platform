@@ -1,12 +1,12 @@
 # Cross-Harness Agent Plugin Marketplace
 
-This marketplace demonstrates the same `backend-standards` workflow in the three native plugin formats. The packages intentionally duplicate shared content because each host resolves plugin manifests from a different location and OpenAI plugins do not package custom agents.
+This marketplace ships host-native packages for the same workflow, intentionally duplicating shared content because each host resolves plugin manifests from a different location and OpenAI plugins do not package custom agents.
 
 | Host | Marketplace catalog | Plugin package | Components |
 | --- | --- | --- | --- |
-| Claude Code | `.claude-plugin/marketplace.json` | `plugins/claude-backend-standards/` | Skill, read-only reviewer agent, infrastructure guard |
-| OpenAI Codex / ChatGPT | `.agents/plugins/marketplace.json` | `plugins/openai-backend-standards/` | Skill and Codex-only infrastructure guard |
-| GitHub Copilot | `.github/plugin/marketplace.json` | `plugins/backend-standards/` | Skill, read-only reviewer agent, infrastructure guard |
+| Claude Code | `.claude-plugin/marketplace.json` | `plugins/claude-*/` | `backend-standards`, `plugin-authoring` |
+| OpenAI Codex / ChatGPT | `.agents/plugins/marketplace.json` | `plugins/openai-*/` | `backend-standards`, `plugin-authoring` |
+| GitHub Copilot | `.github/plugin/marketplace.json` | `plugins/<plugin-name>/` | `backend-standards`, `plugin-authoring` |
 
 ## Included workflow
 
@@ -17,6 +17,35 @@ This marketplace demonstrates the same `backend-standards` workflow in the three
 - **Infrastructure guard hook** — blocks agent write tools from modifying project files that the team protects, including solution, project, and pipeline files.
 
 The infrastructure guard is intentionally narrow and does not invoke network services or require credentials. Claude Code and Codex require the user to review and trust plugin hooks before they run; the Copilot package uses its native hook configuration.
+
+## Portable plugin-authoring tooling
+
+`plugin-authoring` is an installable authoring toolkit for **any existing local cross-harness marketplace**. It does not assume or target this repository when used.
+
+- **`marketplace-plugin-authoring` skill** — guides creation and modification of native Claude, OpenAI, and Copilot plugin packages in an explicit target marketplace.
+- **`scaffold_plugin.py`** — validates caller-provided names and publisher metadata, checks every selected catalog for collisions, creates host-native package skeletons, seeds a portable skill, and registers the selected catalogs.
+- **`validate_marketplace.py`** — validates local catalog sources, native manifests, package containment, and portable skill frontmatter. It supports individual hosts or `--require-all-hosts` for a cross-host plugin.
+- **`marketplace-plugin-reviewer` agent** — available in Claude Code and GitHub Copilot; reviews the supplied target marketplace without modifying it.
+
+The toolkit expects the target marketplace to already provide the conventional catalog files for the hosts it will target. Run the bundled utilities with an explicit path and publisher:
+
+```shell
+python /absolute/path/to/scaffold_plugin.py \
+  --marketplace /path/to/marketplace \
+  --name api-design \
+  --skill api-contract \
+  --description "Guide API contract design." \
+  --author "Example Developer Tools" \
+  --hosts claude,openai,github
+
+python /absolute/path/to/validate_marketplace.py \
+  --marketplace /path/to/marketplace \
+  --plugin api-design \
+  --hosts claude,openai,github \
+  --require-all-hosts
+```
+
+The scaffold intentionally creates only the portable skill. Add an agent, hook, MCP server, or other host-specific component only after the workflow needs it.
 
 ## Try each native marketplace
 

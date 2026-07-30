@@ -1,0 +1,15 @@
+{
+  "name": "eshop-dev",
+  "description": "Agents for developing the dotnet/eShop reference application: a .NET backend specialist and a GitHub Agentic Workflows dispatcher",
+  "version": "1.0.0",
+  "author": {
+    "name": "Milosz Jurgiel"
+  },
+  "license": "MIT",
+  "keywords": [
+    "agent-plugin",
+    "eshop",
+    "dotnet"
+  ],
+  "agents": "agents/"
+}
